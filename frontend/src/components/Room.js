@@ -12,6 +12,8 @@ class Room extends Component {
             guestCanPause: false, 
             isHost: false,
             showSettings: false,
+            spotifyAuthenticated: false,
+            song: {}
         };
         this.roomCode = this.props.params.roomCode;
         this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -19,7 +21,18 @@ class Room extends Component {
         this.renderSettingsButton = this.renderSettingsButton.bind(this);
         this.renderSettings = this.renderSettings.bind(this);
         this.getRoomDetails = this.getRoomDetails.bind(this);
+        this.authenticateSpotify = this.authenticateSpotify.bind(this)
+        this.getCurrentSong = this.getCurrentSong.bind(this);
         this.getRoomDetails();
+        //this.getCurrentSong();
+    }
+
+    componentDidMount() {
+        this.interval = setInterval(this.getCurrentSong, 999);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 
     getRoomDetails() {
@@ -29,16 +42,53 @@ class Room extends Component {
                 this.props.leaveRoomCallback();
                 this.props.navigate("/");
             }
-            return response.json()
+            return response.json();
         })
         .then((data) => {
-            console.log("Room Details:", data);  // 调试信息
+            console.log("RRoom Details:", data);  // 调试信息
             this.setState({
                 votesToSkip: data.votes_to_skip,
                 guestCanPause: data.guest_can_pause,
                 isHost: data.is_host
+            // }, () => {
+            //     console.log("Hell");  // 这里一定会打印
+            //     if (this.state.isHost) {
+            //         console.log("Hello");
+            //         this.authenticateSpotify();
+            //     }
+            
             });
+            // console.log("========== Hell ==========");
+            if (this.state.isHost) {
+                console.log("Hello");
+                this.authenticateSpotify();
+            }
         });
+    }
+
+    authenticateSpotify() {
+        fetch('/spotify/is-authenticated')
+        .then((response) => response.json())
+        .then((data) => {
+            this.setState({spotifyAuthenticated: data.status});
+            if (!data.status) {
+                fetch('/spotify/get-auth-url')
+                .then((response) => response.json())
+                .then((data) => {
+                    window.location.replace(data.url);
+                })
+            }
+        })
+    }
+
+    getCurrentSong() {
+        fetch('/spotify/current-song').then((response) => {
+            if (!response.ok) {
+                return {};
+            } else {
+                return response.json();
+            }
+        }).then((data) => this.setState({song: data}));
     }
 
     leaveButtonPressed() {
@@ -99,7 +149,7 @@ class Room extends Component {
                         Code: {this.roomCode}
                     </Typography>
                 </Grid>
-                <Grid item xs={12} align="center">
+                {/* <Grid item xs={12} align="center">
                     <Typography variant="h6" component="h6">
                         Votes to Skip: {this.state.votesToSkip}
                     </Typography>
@@ -113,7 +163,8 @@ class Room extends Component {
                     <Typography variant="h6" component="h6">
                         Host: {this.state.isHost.toString()}
                     </Typography>
-                </Grid>
+                </Grid> */}
+                {this.state.song}
                 {this.state.isHost ? this.renderSettingsButton() : null}
                 <Grid item xs={12} align="center">
                     <Button variant="contained" color="secondary" onClick={ this.leaveButtonPressed }>

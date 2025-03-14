@@ -20,7 +20,6 @@ export default class HomePage extends Component {
             roomCode:null
         })
     }
-
     
     async componentDidMount() {
         fetch("/api/user-in-room")

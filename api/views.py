@@ -26,8 +26,6 @@ class CreateRoomView(APIView):
         
         serialiser = self.serializer_class(data=request.data)
         if serialiser.is_valid():
-            # guest_can_pause = serialiser.data.guest_can_pause
-            # votes_to_skip = serialiser.data.votes_to_skip
             guest_can_pause = serialiser.validated_data.get('guest_can_pause')
             votes_to_skip = serialiser.validated_data.get('votes_to_skip')
             print(f"Received guest_can_pause: {guest_can_pause}, votes_to_skip: {votes_to_skip}")  # 调试输出
@@ -142,4 +140,3 @@ class UpdateRoom(APIView):
             return Response(RoomSerialiser(room).data, status=status.HTTP_200_OK)
 
         return Response({'Bad Request': "Invalid Data..."}, status=status.HTTP_400_BAD_REQUEST) # Review
-    

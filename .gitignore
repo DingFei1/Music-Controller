@@ -1,0 +1,28 @@
+# Django (Backend)
+api/*.pyc
+api/__pycache__/
+
+venv/
+db.sqlite3
+/static/
+
+# React (Frontend)
+frontend/__pycache__/
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+
+music_controller/*.pyc
+music_controller/__pycache__/
+
+spotify/*.pyc
+spotify/__pycache__/
+
+
+# IDE files
+.vscode/
+.idea/
+
+# System-specific files
+.DS_Store
+Thumbs.db

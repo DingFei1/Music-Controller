@@ -3,6 +3,7 @@ import { Grid, Button, Typography } from "@mui/material";
 import { withRouter } from "./withRouter";
 import { Link } from "react-router-dom";
 import CreateRoomPage from "./CreateRoomPage";
+import MusicPlayer from "./MusicPlayer";
 
 class Room extends Component {
     constructor(props) {
@@ -23,15 +24,19 @@ class Room extends Component {
         this.getRoomDetails = this.getRoomDetails.bind(this);
         this.authenticateSpotify = this.authenticateSpotify.bind(this)
         this.getCurrentSong = this.getCurrentSong.bind(this);
-        this.getRoomDetails();
+        this._isMounted = false;
         //this.getCurrentSong();
     }
 
     componentDidMount() {
+        this._isMounted = true;
+        this.getRoomDetails();
+        this.getCurrentSong();
         this.interval = setInterval(this.getCurrentSong, 999);
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearInterval(this.interval);
     }
 
@@ -44,26 +49,36 @@ class Room extends Component {
             }
             return response.json();
         })
-        .then((data) => {
-            console.log("RRoom Details:", data);  // 调试信息
-            this.setState({
-                votesToSkip: data.votes_to_skip,
-                guestCanPause: data.guest_can_pause,
-                isHost: data.is_host
+        // .then((data) => {
+        //     console.log("RRoom Details:", data);  // 调试信息
+        //     this.setState({
+        //         votesToSkip: data.votes_to_skip,
+        //         guestCanPause: data.guest_can_pause,
+        //         isHost: data.is_host
             // }, () => {
             //     console.log("Hell");  // 这里一定会打印
             //     if (this.state.isHost) {
             //         console.log("Hello");
             //         this.authenticateSpotify();
             //     }
-            
-            });
-            // console.log("========== Hell ==========");
-            if (this.state.isHost) {
-                console.log("Hello");
-                this.authenticateSpotify();
+        .then((data) => {
+            if (this._isMounted) {  // 确保组件仍然挂载
+                this.setState({
+                    votesToSkip: data.votes_to_skip,
+                    guestCanPause: data.guest_can_pause,
+                    isHost: data.is_host
+                });
+                if (this.state.isHost) {
+                    console.log("Hello");
+                        this.authenticateSpotify();
+                }
             }
-        });
+        })
+        .catch((error) => console.error("Error fetching room details:", error));
+            //});
+            // console.log("========== Hell ==========");
+        
+        //});
     }
 
     authenticateSpotify() {
@@ -164,7 +179,8 @@ class Room extends Component {
                         Host: {this.state.isHost.toString()}
                     </Typography>
                 </Grid> */}
-                {this.state.song}
+                {/*{this.state.song}*/}
+                <MusicPlayer {...this.state.song}> </MusicPlayer>
                 {this.state.isHost ? this.renderSettingsButton() : null}
                 <Grid item xs={12} align="center">
                     <Button variant="contained" color="secondary" onClick={ this.leaveButtonPressed }>

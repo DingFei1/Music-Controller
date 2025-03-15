@@ -57,6 +57,7 @@ class GetRoom(APIView):
 
         room_codes = Room.objects.values_list('code', flat=True)  # 获取所有的 code 字段
         print("get room 所有的房间 code: ", list(room_codes))  # 打印所有的 code
+        
         if code != None:
             room = Room.objects.filter(code=code)
             print(str(room.query))
@@ -112,7 +113,8 @@ class LeaveRoom(APIView):
                 room.delete() # Review
         
         return Response({'Message': 'Success'}, status=status.HTTP_200_OK)
-    
+
+
 class UpdateRoom(APIView):
     serialiser_class = UpdateRoomSerialiser
     def patch(self, request, format=None):

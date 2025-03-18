@@ -32,12 +32,12 @@ class Room extends Component {
         this._isMounted = true;
         this.getRoomDetails();
         this.getCurrentSong();
-        this.interval = setInterval(this.getCurrentSong, 999);
+        //this.interval = setInterval(this.getCurrentSong, 999);
     }
 
     componentWillUnmount() {
         this._isMounted = false;
-        clearInterval(this.interval);
+        //clearInterval(this.interval);
     }
 
     getRoomDetails() {
@@ -70,7 +70,7 @@ class Room extends Component {
                 });
                 if (this.state.isHost) {
                     console.log("Hello");
-                        this.authenticateSpotify();
+                    this.authenticateSpotify();
                 }
             }
         })

@@ -60,10 +60,10 @@ class CreateRoomPage extends Component {
         };
         fetch("/api/create-room", requestOptions)
             .then((response) => response.json())
-            .then((data) => {
+            .then((data) => 
                 //this.props.navigate(`/room/${data.code}`); // 用 navigate 代替 history.push
-                this.props.navigate("/room/" + data.code);
-            })
+                this.props.navigate("/room/" + data.code)
+            )
             .catch((error) => console.error("Error:", error));
     }
 
@@ -121,7 +121,7 @@ class CreateRoomPage extends Component {
     }
 
     render() {
-        const title = this.props.update ? "Update Room" : "Create A Room"
+        const title = this.props.update ? "Update Room" : "Create A Room";
 
         return (
             <Grid container spacing = {1}>

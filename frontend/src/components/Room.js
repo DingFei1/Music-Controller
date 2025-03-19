@@ -63,7 +63,7 @@ class Room extends Component {
             //     }
         .then((data) => {
             if (this._isMounted) {  // 确保组件仍然挂载
-                console.log("Is mounted")
+                //console.log("Is mounted")
                 this.setState({
                     votesToSkip: data.votes_to_skip,
                     guestCanPause: data.guest_can_pause,
@@ -71,10 +71,10 @@ class Room extends Component {
                 },
                 
                 () => {  // 在状态更新完成后打印
-                    console.log("Hello")
-                    console.log(data.is_host)
-                    console.log(this.state.isHost)
-                    console.log("Updated is_host: ", this.state.isHost);
+                    //console.log("Hello")
+                    //console.log(data.is_host)
+                    //console.log(this.state.isHost)
+                    //console.log("Updated is_host: ", this.state.isHost);
                     if (this.state.isHost) {
                         this.authenticateSpotify();
                     }

@@ -139,7 +139,7 @@ class CreateRoomPage extends Component {
                 </Grid>
                 <Grid item xs={12} align="center">
                     <FormControl>
-                        <FormHelperText>
+                        <FormHelperText component="span">
                             <div align='center'>
                                 Guest Control of Playback State
                             </div>
@@ -168,7 +168,7 @@ class CreateRoomPage extends Component {
                             min: 1,
                             style: {textAlign: "center"}
                          }}/>
-                        <FormHelperText>
+                        <FormHelperText component="span">
                             <div align="center">
                                 Votes Required to Skip Song 
                             </div>

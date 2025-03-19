@@ -32,12 +32,12 @@ class Room extends Component {
         this._isMounted = true;
         this.getRoomDetails();
         this.getCurrentSong();
-        //this.interval = setInterval(this.getCurrentSong, 999);
+        this.interval = setInterval(this.getCurrentSong, 999);
     }
 
     componentWillUnmount() {
         this._isMounted = false;
-        //clearInterval(this.interval);
+        clearInterval(this.interval);
     }
 
     getRoomDetails() {
@@ -63,36 +63,42 @@ class Room extends Component {
             //     }
         .then((data) => {
             if (this._isMounted) {  // 确保组件仍然挂载
+                console.log("Is mounted")
                 this.setState({
                     votesToSkip: data.votes_to_skip,
                     guestCanPause: data.guest_can_pause,
                     isHost: data.is_host
-                });
-                if (this.state.isHost) {
-                    console.log("Hello");
-                    this.authenticateSpotify();
-                }
+                },
+                
+                () => {  // 在状态更新完成后打印
+                    console.log("Hello")
+                    console.log(data.is_host)
+                    console.log(this.state.isHost)
+                    console.log("Updated is_host: ", this.state.isHost);
+                    if (this.state.isHost) {
+                        this.authenticateSpotify();
+                    }
+            });}
+            else {
+                console.log("Is not mounted")
             }
         })
         .catch((error) => console.error("Error fetching room details:", error));
-            //});
-            // console.log("========== Hell ==========");
-        
-        //});
     }
 
     authenticateSpotify() {
         fetch('/spotify/is-authenticated')
         .then((response) => response.json())
         .then((data) => {
-            this.setState({spotifyAuthenticated: data.status});
-            if (!data.status) {
-                fetch('/spotify/get-auth-url')
-                .then((response) => response.json())
-                .then((data) => {
-                    window.location.replace(data.url);
-                })
-            }
+            this.setState({spotifyAuthenticated: data.status}, () => {  // 使用回调来确保状态更新后再执行
+                if (!data.status) {
+                    fetch('/spotify/get-auth-url')
+                    .then((response) => response.json())
+                    .then((data) => {
+                        window.location.replace(data.url);
+                    });
+                }
+            });
         })
     }
 
@@ -131,7 +137,7 @@ class Room extends Component {
                         votesToSkip= {this.state.votesToSkip}
                         guestCanPause={this.state.guestCanPause}
                         roomCode={this.roomCode}
-                        updateShowSettings={this.getRoomDetails}>
+                        updateCallback={this.getRoomDetails}>
                     </CreateRoomPage>
                 </Grid>
                 <Grid item xs={12} align="center">
@@ -179,7 +185,6 @@ class Room extends Component {
                         Host: {this.state.isHost.toString()}
                     </Typography>
                 </Grid> */}
-                {/*{this.state.song}*/}
                 <MusicPlayer {...this.state.song}> </MusicPlayer>
                 {this.state.isHost ? this.renderSettingsButton() : null}
                 <Grid item xs={12} align="center">

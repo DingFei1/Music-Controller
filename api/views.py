@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from rest_framework import generics, status
 from .serialisers import RoomSerialiser, CreateRoomSerialiser, UpdateRoomSerialiser
 from .models import Room
@@ -8,30 +7,34 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 
 
-def main(request):
-    return HttpResponse("<h2>Hello</h2>")
-
-
+# Create your views here.
 class RoomView(generics.CreateAPIView):
     queryset = Room.objects.all()
-    serializer_class = RoomSerialiser
+    serialiser_class = RoomSerialiser
 
 
 class CreateRoomView(APIView):
-    serializer_class = CreateRoomSerialiser
+    serialiser_class = CreateRoomSerialiser
 
     def post(self, request, format=None):
+        print(self.request.session.session_key + "\n\n\n\n")
         if not self.request.session.exists(self.request.session.session_key):
+            print("Not existed")
             self.request.session.create()
         
-        serialiser = self.serializer_class(data=request.data)
+        serialiser = self.serialiser_class(data=request.data)
         if serialiser.is_valid():
             guest_can_pause = serialiser.validated_data.get('guest_can_pause')
             votes_to_skip = serialiser.validated_data.get('votes_to_skip')
             print(f"Received guest_can_pause: {guest_can_pause}, votes_to_skip: {votes_to_skip}")  # 调试输出
 
-            host = self.request.session.session_key
-            queryset = Room.objects.filter(host=host)
+            host_id = self.request.session.session_key
+            queryset = Room.objects.filter(host=host_id)
+            if queryset.exists():
+                for room in queryset:
+                    print(str(room) + "\n\n")
+            else:
+                print("queryset not existed")
             room_codes = Room.objects.values_list('code', flat=True)  # 获取所有的 code 字段
             print("before get room 所有的房间 code: ", list(room_codes))
             if queryset.exists():
@@ -44,18 +47,18 @@ class CreateRoomView(APIView):
                 print("after get room 所有的房间 code: ", list(room_codes))
                 return Response(RoomSerialiser(room).data, status=status.HTTP_200_OK)
             else:
-                room = Room(host=host, guest_can_pause=guest_can_pause, votes_to_skip=votes_to_skip)
+                room = Room(host=host_id, guest_can_pause=guest_can_pause, votes_to_skip=votes_to_skip)
                 room.save()
                 self.request.session['room_code'] = room.code
-                room_codes = Room.objects.values_list('code', flat=True)  # 获取所有的 code 字段
-                print("after get room 所有的房间 code: ", list(room_codes))
+                room_codes_with_hosts = Room.objects.values('code', 'host')  # 获取每个 room 的 code 和对应的 host
+                print("每个房间的 code 和 host: ", list(room_codes_with_hosts))
                 return Response(RoomSerialiser(room).data, status=status.HTTP_201_CREATED)
             
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetRoom(APIView):
-    serializer_class = RoomSerialiser
+    serialiser_class = RoomSerialiser
     lookup_url_kwarg = 'code'
 
     def get(self, request, format=None):
@@ -66,7 +69,7 @@ class GetRoom(APIView):
         
         if code != None:
             room = Room.objects.filter(code=code)
-            print(str(room.query))
+            #print(str(room.query))
             if len(room) > 0:
                 data = RoomSerialiser(room[0]).data
                 data['is_host'] = self.request.session.session_key == room[0].host

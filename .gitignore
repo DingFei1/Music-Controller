@@ -1,6 +1,6 @@
 # Django (Backend)
-api/*.pyc
-api/__pycache__/
+*.pyc
+/__pycache__/
 
 venv/
 db.sqlite3

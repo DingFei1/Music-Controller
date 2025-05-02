@@ -115,36 +115,36 @@ class Room extends Component {
 
   renderSettings() {
     return (
-        <Grid container spacing={1}>
-            <Grid item xs={12} align="center">
-                <CreateRoomPage
-                    update={true}
-                    votesToSkip= {this.state.votesToSkip}
-                    guestCanPause={this.state.guestCanPause}
-                    roomCode={this.roomCode}
-                    updateCallback={this.getRoomDetails}>
-                </CreateRoomPage>
-            </Grid>
-            <Grid item xs={12} align="center">
-                <Button variant="contained" color="primary" onClick={() => this.updateShowSettings(false)}>
-                    Close
-                </Button>
-            </Grid>
-        </Grid>
-    );
-}
-
-renderSettingsButton() {
-    return (
+      <Grid container spacing={1}>
         <Grid item xs={12} align="center">
-            <Button variant="contained" color="primary" onClick={()=> this.updateShowSettings(true)}>
-                Settings
-            </Button>
+          <CreateRoomPage
+            update={true}
+            votesToSkip= {this.state.votesToSkip}
+            guestCanPause={this.state.guestCanPause}
+            roomCode={this.roomCode}
+            updateCallback={this.getRoomDetails}>
+          </CreateRoomPage>
         </Grid>
+        <Grid item xs={12} align="center">
+          <Button variant="contained" color="primary" onClick={() => this.updateShowSettings(false)}>
+            Close
+          </Button>
+        </Grid>
+      </Grid>
     );
-}
+  }
 
-render() {
+  renderSettingsButton() {
+    return (
+      <Grid item xs={12} align="center">
+        <Button variant="contained" color="primary" onClick={()=> this.updateShowSettings(true)}>
+          Settings
+        </Button>
+      </Grid>
+    );
+  }
+
+  render() {
     if (this.state.showSettings) {
         return this.renderSettings();
     }

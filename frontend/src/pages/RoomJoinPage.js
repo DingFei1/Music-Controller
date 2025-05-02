@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 //import { withRouter } from "./withRouter";
 
 
-const RoomJoinPage = (props) => {
+const RoomJoinPage = () => {
   const[roomCode, setRoomCode] = useState("");
   const[error, setError] = useState("");
   const navigate = useNavigate();

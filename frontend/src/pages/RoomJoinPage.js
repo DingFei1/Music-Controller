@@ -1,75 +1,66 @@
-import React, {Component} from "react"
+import React, { useState, useNavigate } from "react"
 import { TextField, Button, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom"
-import { withRouter } from "./withRouter";
+//import { withRouter } from "./withRouter";
 
-class RoomJoinPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state={
-      roomCode: "",
-      error: ""
-    }
-    this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
-    this._roomButtonPressed = this._roomButtonPressed.bind(this)
-  }
 
-  render() {
-    return (
-      <Grid container spacing={1}>
-        <Grid item xs={12} align="center">
-          <Typography variant="h4" component="h4">
-            Join a Room
-          </Typography>
-        </Grid>
-        <Grid item xs={12} align="center">
-          <TextField 
-            error={this.state.error}
-            label="Code" 
-            placeholder="Enter a Room Code"
-            value={this.state.roomCode}
-            helperText={this.state.error}
-            variant="outlined"
-            onChange={this._handleTextFieldChange}
-          />
-        </Grid>
-        <Grid item xs={12} align="center">
-          <Button variant="contained" color="primary" onClick={this._roomButtonPressed}>
-            Enter Room
-          </Button>
-        </Grid>
-        <Grid item xs={12} align="center">
-          <Button variant="contained" color="secondary" to = "/" component={Link}>Back</Button>
-        </Grid>
-      </Grid>
-    );
-  }
+const RoomJoinPage = (props) => {
+  const[roomCode, setRoomCode] = useState("");
+  const[error, setError] = useState("");
+  const navigate = useNavigate();
 
-  _handleTextFieldChange(e) {
-    this.setState({
-      roomCode: e.target.value
-    })
-  }
+  const handleTextFieldChange = (e) => {
+    setRoomCode(e.target.value);
+  };
 
-  _roomButtonPressed() {
+  const roomButtonPressed = () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json"},
       body:JSON.stringify({
-        code:this.state.roomCode
+        code: roomCode
       })
     };
     fetch('/api/join-room', requestOptions).then((response) => {
       if (response.ok) {
-        this.props.navigate(`/room/${this.state.roomCode}`);
+        navigate(`/room/${roomCode}`);
       }
       else {
-        this.setState({error: "Room not found."});
+        setError("Room not found.");
       }
     }).catch((error) => {
       console.log(error);
-    })
-  }
-}
+    });
+  };
 
-export default withRouter(RoomJoinPage);
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={12} align="center">
+        <Typography variant="h4" component="h4">
+          Join a Room
+        </Typography>
+      </Grid>
+      <Grid item xs={12} align="center">
+        <TextField 
+          error={!!error}
+          label="Code" 
+          placeholder="Enter a Room Code"
+          value={roomCode}
+          helperText={error}
+          variant="outlined"
+          onChange={handleTextFieldChange}
+        />
+      </Grid>
+      <Grid item xs={12} align="center">
+        <Button variant="contained" color="primary" onClick={roomButtonPressed}>
+          Enter Room
+        </Button>
+      </Grid>
+      <Grid item xs={12} align="center">
+        <Button variant="contained" color="secondary" to = "/" component={ Link }>Back</Button>
+      </Grid>
+    </Grid>
+  );
+};
+
+export default RoomJoinPage;

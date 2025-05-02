@@ -1,132 +1,107 @@
-import React, { Component } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Grid, Button, Typography } from "@mui/material";
-import { withRouter } from "./withRouter";
+//import { withRouter } from "./withRouter";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
 
-class Room extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      votesToSkip: 2,
-      guestCanPause: false, 
-      isHost: false,
-      showSettings: false,
-      spotifyAuthenticated: false,
-      song: {}
+const Room = (props) => {
+  const [votesToSkip, setVotesToSkip] = useState(2);
+  const [guestCanPause, setGuestCanPause] = useState(false);
+  const [isHost, setIsHost] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+  const [song, setSong] = useState({});
+  const intervalRef = useRef();
+
+  const roomCode = props.params.roomCode;
+
+  useEffect(() => {
+    getRoomDetails();
+    getCurrentSong();
+    intervalRef.current = setInterval(getCurrentSong, 999);
+    return () => {
+      clearInterval(intervalRef.current);
     };
-    this.roomCode = this.props.params.roomCode;
-    this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
-    this.updateShowSettings = this.updateShowSettings.bind(this);
-    this.renderSettingsButton = this.renderSettingsButton.bind(this);
-    this.renderSettings = this.renderSettings.bind(this);
-    this.getRoomDetails = this.getRoomDetails.bind(this);
-    this.authenticateSpotify = this.authenticateSpotify.bind(this)
-    this.getCurrentSong = this.getCurrentSong.bind(this);
-    this._isMounted = false;
-    //this.getCurrentSong();
-  }
+  }, []);
 
-  componentDidMount() {
-    this._isMounted = true;
-    this.getRoomDetails();
-    this.getCurrentSong();
-    this.interval = setInterval(this.getCurrentSong, 999);
-  }
+  useEffect(() => {
+    if (isHost) {
+      authenticateSpotify();
+    }
+  }, [isHost]);
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    clearInterval(this.interval);
-  }
-
-  getRoomDetails() {
-    fetch("/api/get-room" + "?code=" + this.roomCode)
+  const getRoomDetails = () => {
+    fetch("/api/get-room" + "?code=" + roomCode)
     .then((response) => {
       if (!response.ok) {
-          this.props.leaveRoomCallback();
-          this.props.navigate("/");
+          props.leaveRoomCallback();
+          props.navigate("/");
       }
       return response.json();
     })
     .then((data) => {
-      if (this._isMounted) {
-        this.setState(
-          {
-            votesToSkip: data.votes_to_skip,
-            guestCanPause: data.guest_can_pause,
-            isHost: data.is_host
-          },
-          () => {
-            if (this.state.isHost) {
-                this.authenticateSpotify();
-            }
-          }
-        );
-      }
-      else {
-        console.log("Is not mounted")
-      }
+      setVotesToSkip(data.votes_to_skip);
+      setGuestCanPause(data.guest_can_pause);
+      setIsHost(data.is_host);
     })
     .catch((error) => console.error("Error fetching room details:", error));
-  }
+  };
 
-  authenticateSpotify() {
+  const authenticateSpotify = () => {
     fetch('/spotify/is-authenticated')
     .then((response) => response.json())
     .then((data) => {
-      this.setState({spotifyAuthenticated: data.status}, () => {
+      setSpotifyAuthenticated(data.status), () => {
         if (!data.status) {
           fetch('/spotify/get-auth-url')
           .then((response) => response.json())
           .then((data) => {
             window.location.replace(data.url);
           });
-        }
-      });
-    })
-  }
+        };
+      };
+    });
+  };
 
-  getCurrentSong() {
+  const getCurrentSong = () => {
     fetch('/spotify/current-song').then((response) => {
       if (!response.ok) {
-          return {};
+        return {};
       }
       else {
-          return response.json();
+        return response.json();
       }
-    }).then((data) => this.setState({song: data}));
+    }).then((data) => setSong(data));
   }
 
-  leaveButtonPressed() {
+  const leaveButtonPressed = () => {
     const requestOptions = {
-      method: "Post",
+      method: "POST",
       headers: { "Content-Type": "application/json" }
     }
     fetch("/api/leave-room", requestOptions).then((_response) => {
-      this.props.navigate("/");
+      props.navigate("/");
     });
   }
 
-  updateShowSettings(value) {
-    this.setState({
-      showSettings: value,
-    });
+  const updateShowSettings = (value) => {
+    setShowSettings(value);
   }
 
-  renderSettings() {
+  const renderSettings = () => {
     return (
       <Grid container spacing={1}>
         <Grid item xs={12} align="center">
           <CreateRoomPage
             update={true}
-            votesToSkip= {this.state.votesToSkip}
-            guestCanPause={this.state.guestCanPause}
-            roomCode={this.roomCode}
-            updateCallback={this.getRoomDetails}>
+            votesToSkip= {votesToSkip}
+            guestCanPause={guestCanPause}
+            roomCode={roomCode}
+            updateCallback={getRoomDetails}>
           </CreateRoomPage>
         </Grid>
         <Grid item xs={12} align="center">
-          <Button variant="contained" color="primary" onClick={() => this.updateShowSettings(false)}>
+          <Button variant="contained" color="primary" onClick={() => updateShowSettings(false)}>
             Close
           </Button>
         </Grid>
@@ -134,37 +109,37 @@ class Room extends Component {
     );
   }
 
-  renderSettingsButton() {
+  const renderSettingsButton = () => {
     return (
       <Grid item xs={12} align="center">
-        <Button variant="contained" color="primary" onClick={()=> this.updateShowSettings(true)}>
+        <Button variant="contained" color="primary" onClick={()=> updateShowSettings(true)}>
           Settings
         </Button>
       </Grid>
     );
   }
 
-  render() {
-    if (this.state.showSettings) {
-        return this.renderSettings();
-    }
+  if (showSettings) {
+      return renderSettings();
+  }
+  else {
     return (
       <Grid container spacing={1}>
         <Grid item xs={12} align="center">
           <Typography variant="h4" component="h4">
-            Code: {this.roomCode}
+            Code: { roomCode }
           </Typography>
         </Grid>
-        <MusicPlayer {...this.state.song}> </MusicPlayer>
-        {this.state.isHost ? this.renderSettingsButton() : null}
+        <MusicPlayer {...song}> </MusicPlayer>
+        {isHost ? renderSettingsButton() : null}
         <Grid item xs={12} align="center">
-          <Button variant="contained" color="secondary" onClick={ this.leaveButtonPressed }>
+          <Button variant="contained" color="secondary" onClick={ leaveButtonPressed }>
             Leave Room
           </Button>
         </Grid>
       </Grid>
     );
   }
-}
+};
 
-export default withRouter(Room);
+export default Room;

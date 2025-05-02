@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Grid, Button, Typography, IconButton } from "@mui/material";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Link } from "react-router-dom";
+
 
 const pages = {
   JOIN: "pages.join",
   CREATE: "pages.create",
 };
 
-export default function Info(props) {
+const joinInfo = () => {
+  return "Join page";
+}
+
+const createInfo = () => {
+  return "Create page";
+}
+
+const Info = () => {
   const [page, setPage] = useState(pages.JOIN);
-
-  function joinInfo() {
-      return "Join page";
-  }
-
-  function createInfo() {
-      return "Create page";
-  }
 
   return (
     <Grid container spacing={1}>
@@ -34,9 +35,9 @@ export default function Info(props) {
       </Grid>
       <Grid item xs={12} align="center">
         <IconButton
-            onClick={() => {
-                page === pages.CREATE ? setPage(pages.JOIN) : setPage(pages.CREATE);
-            }}
+          onClick={() => {
+              page === pages.CREATE ? setPage(pages.JOIN) : setPage(pages.CREATE);
+          }}
         >
           {page === pages.CREATE ? (<NavigateBeforeIcon/>) : (<NavigateNextIcon/>)}
         </IconButton>
@@ -49,3 +50,5 @@ export default function Info(props) {
     </Grid>
   );
 }
+
+export default Info;

@@ -1,5 +1,7 @@
 # Music Controller
-You can follow the instructions in the rest of this manual to build and run the program. If you encounter any problems during initialization or execution, feel free to contact [Fei Ding].<br><br>
+It is a web-based music controller system.<br>
+The system is built using a **React–Django** architecture.<br>
+You can follow the instructions in the rest of this manual to build and run the program. If you encounter any problems during initialization or execution, feel free to contact [Fei Ding](https://github.com/DingFei1).<br><br>
 
 ## Initialise Project
 #### Backend (Django)

@@ -7,6 +7,7 @@ db.sqlite3
 /static/
 
 # React (Frontend)
+frontend_old/
 frontend/__pycache__/
 frontend/node_modules/
 frontend/build/

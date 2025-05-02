@@ -7,10 +7,8 @@ export function withRouter(Component) {
         const navigate = useNavigate();
         const location = useLocation();
         
-        // 将路由信息传递给类组件
         return <Component {...props} params={params} navigate={navigate} location={location} />;
     };
 }
 
 //export default withRouter;
-

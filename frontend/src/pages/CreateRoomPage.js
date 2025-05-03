@@ -93,7 +93,10 @@ const CreateRoomPage = (
   const title = update ? "Update Room" : "Create A Room";
 
   return (
-    <Grid container spacing = {1}>
+    <Grid container spacing = {1} direction="column" alignItems="center" sx={{ 
+      minHeight: '100vh',
+      p: 20,
+    }}>
       <Grid item xs={12} align="center">
         <Collapse in={errorMsg !== "" || successMsg !== ""}> {/* Need review */}
           {successMsg !== "" 
@@ -102,11 +105,11 @@ const CreateRoomPage = (
         </Collapse>
       </Grid>
       <Grid item xs={12} align="center">
-        <Typography component="h4" variant="h4">
+        <Typography component="h4" variant="h4" sx={{ mb: 3 }}>
           {title}
         </Typography>
       </Grid>
-      <Grid item xs={12} align="center">
+      <Grid item xs={12} align="center" sx={{ mb: 3 }}>
         <FormControl>
           <FormHelperText component="span">
             <div align='center'>
@@ -126,7 +129,7 @@ const CreateRoomPage = (
           </RadioGroup>
         </FormControl>
       </Grid>
-      <Grid item xs={12} align="center">
+      <Grid item xs={12} align="center" sx={{ mb: 3 }}>
         <FormControl>
           <TextField required={true} 
             type="number" 

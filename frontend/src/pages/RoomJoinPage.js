@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, Grid, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom"
-//import { withRouter } from "./withRouter";
 
 
 const RoomJoinPage = () => {
@@ -34,7 +33,10 @@ const RoomJoinPage = () => {
   };
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} direction="column" alignItems="center" sx={{ 
+      minHeight: '100vh',
+      p: 20,
+    }}>
       <Grid item xs={12} align="center">
         <Typography variant="h4" component="h4">
           Join a Room

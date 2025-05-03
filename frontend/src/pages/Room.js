@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Grid, Button, Typography } from "@mui/material";
 import { useNavigate, useParams } from 'react-router-dom';
-//import { withRouter } from "./withRouter";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
+
 
 const Room = (props) => {
   const [votesToSkip, setVotesToSkip] = useState(2);
   const [guestCanPause, setGuestCanPause] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+  const [/*spotifyAuthenticated*/, setSpotifyAuthenticated] = useState(false);
   const [song, setSong] = useState({});
   const intervalRef = useRef();
 
@@ -34,7 +34,7 @@ const Room = (props) => {
       setIsHost(data.is_host);
     })
     .catch((error) => console.error("Error fetching room details:", error));
-  }, [roomCode, leaveRoomCallback]);
+  }, [roomCode, leaveRoomCallback, navigate]);
 
   const getCurrentSong = useCallback(() => {
     fetch('http://localhost:8000/spotify/current-song').then((response) => {
@@ -127,7 +127,10 @@ const Room = (props) => {
   }
   else {
     return (
-      <Grid container spacing={1}>
+      <Grid container spacing={1} direction="column" alignItems="center" sx={{ 
+        minHeight: '100vh',
+        p: 20,
+      }}>
         <Grid item xs={12} align="center">
           <Typography variant="h4" component="h4">
             Code: { roomCode }

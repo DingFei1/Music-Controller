@@ -5,7 +5,6 @@ import Room from "./Room";
 import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom";
 import { Grid, Button, ButtonGroup, Typography } from "@mui/material";
 import Info from "./Info";
-//import { indigo } from "@mui/material/colors";
 
 
 const HomePage = () => {

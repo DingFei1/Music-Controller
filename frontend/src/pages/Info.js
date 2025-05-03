@@ -22,7 +22,10 @@ const Info = () => {
   const [page, setPage] = useState(pages.JOIN);
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} direction="column" alignItems="center" sx={{ 
+      minHeight: '100vh',
+      p: 20,
+    }}>
       <Grid item xs={12} align="center">
         <Typography component="h4" variant="h4">
           What is House Party?

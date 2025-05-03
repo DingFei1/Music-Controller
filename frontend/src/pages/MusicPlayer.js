@@ -11,7 +11,7 @@ const MusicPlayer = (props) => {
       method: "POST",
       headers: { 'Content-Type': 'application/json' }
     };
-    fetch('/spotify/skip', requestOptions);
+    fetch('http://localhost:8000/spotify/skip', requestOptions);
   };
 
   const pauseSong = () => {
@@ -19,7 +19,7 @@ const MusicPlayer = (props) => {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
     };
-    fetch("/spotify/pause", requestOptions);
+    fetch("http://localhost:8000/spotify/pause", requestOptions);
   };
   
   const playSong = () => {
@@ -27,7 +27,7 @@ const MusicPlayer = (props) => {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
     };
-    fetch("/spotify/play", requestOptions);
+    fetch("http://localhost:8000/spotify/play", requestOptions);
   }
 
   const songProgress = (props.time / props.duration) * 100;

@@ -16,7 +16,7 @@ const HomePage = () => {
   };
   
   useEffect(() => {
-    fetch("/api/user-in-room")
+    fetch("http://localhost:8000/api/user-in-room")
     .then((response) => response.json())
     .then((data) => {
       setRoomCode(data.code);
@@ -66,7 +66,7 @@ const HomePage = () => {
         <Route path="/info" element={<Info/>} />
         <Route path='/create' element={<CreateRoomPage/>}/>
         <Route path='/room/:roomCode' 
-          element={<Room leaveRoomCallback={clearRoomCode} />}
+          element={<Room roomCode={roomCode} leaveRoomCallback={clearRoomCode} />}
         />
       </Routes>
     </BrowserRouter>

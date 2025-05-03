@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Grid, Button, Typography } from "@mui/material";
+import { useNavigate, useParams } from 'react-router-dom';
 //import { withRouter } from "./withRouter";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
@@ -13,29 +14,17 @@ const Room = (props) => {
   const [song, setSong] = useState({});
   const intervalRef = useRef();
 
-  const roomCode = props.params.roomCode;
+  const { roomCode } = useParams();
+  const leaveRoomCallback = props.leaveRoomCallback();
 
-  useEffect(() => {
-    getRoomDetails();
-    getCurrentSong();
-    intervalRef.current = setInterval(getCurrentSong, 999);
-    return () => {
-      clearInterval(intervalRef.current);
-    };
-  }, []);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isHost) {
-      authenticateSpotify();
-    }
-  }, [isHost]);
-
-  const getRoomDetails = () => {
-    fetch("/api/get-room" + "?code=" + roomCode)
+  const getRoomDetails = useCallback(() => {
+    fetch("http://localhost:8000/api/get-room?code=" + roomCode)
     .then((response) => {
       if (!response.ok) {
-          props.leaveRoomCallback();
-          props.navigate("/");
+          leaveRoomCallback();
+          navigate("/");
       }
       return response.json();
     })
@@ -45,15 +34,41 @@ const Room = (props) => {
       setIsHost(data.is_host);
     })
     .catch((error) => console.error("Error fetching room details:", error));
-  };
+  }, [roomCode, leaveRoomCallback]);
+
+  const getCurrentSong = useCallback(() => {
+    fetch('http://localhost:8000/spotify/current-song').then((response) => {
+      if (!response.ok) {
+        return {};
+      }
+      else {
+        return response.json();
+      }
+    }).then((data) => setSong(data));
+  },[]);
+
+  useEffect(() => {
+    getRoomDetails();
+    getCurrentSong();
+    intervalRef.current = setInterval(getCurrentSong, 999);
+    return () => {
+      clearInterval(intervalRef.current);
+    };
+  }, [getCurrentSong, getRoomDetails]);
+
+  useEffect(() => {
+    if (isHost) {
+      authenticateSpotify();
+    }
+  }, [isHost]);
 
   const authenticateSpotify = () => {
-    fetch('/spotify/is-authenticated')
+    fetch('http://localhost:8000/spotify/is-authenticated')
     .then((response) => response.json())
     .then((data) => {
       setSpotifyAuthenticated(data.status);
       if (!data.status) {
-        fetch('/spotify/get-auth-url')
+        fetch('http://localhost:8000/spotify/get-auth-url')
         .then((response) => response.json())
         .then((data) => {
           window.location.replace(data.url);
@@ -62,24 +77,13 @@ const Room = (props) => {
     });
   };
 
-  const getCurrentSong = () => {
-    fetch('/spotify/current-song').then((response) => {
-      if (!response.ok) {
-        return {};
-      }
-      else {
-        return response.json();
-      }
-    }).then((data) => setSong(data));
-  };
-
   const leaveButtonPressed = () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" }
     }
-    fetch("/api/leave-room", requestOptions).then((_response) => {
-      props.navigate("/");
+    fetch("http://localhost:8000/api/leave-room", requestOptions).then((_response) => {
+      navigate("/");
     });
   };
 

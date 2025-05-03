@@ -36,7 +36,7 @@ const CreateRoomPage = (
         guest_can_pause: guestCanPause
       })
     };
-    fetch("/api/create-room", requestOptions)
+    fetch("http://localhost:8000/api/create-room", requestOptions)
     .then((response) => response.json())
     .then((data) => navigate("/room/" + data.code))
     .catch((error) => console.error("Error:", error));
@@ -52,7 +52,7 @@ const CreateRoomPage = (
         code: roomCode
       })
     };
-    fetch("/api/update-room", requestOptions)
+    fetch("http://localhost:8000/api/update-room", requestOptions)
     .then((response) => {
       if (response.ok) {
         setSuccessMsg("Room updated successfully!");

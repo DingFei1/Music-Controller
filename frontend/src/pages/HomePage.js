@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import RoomJoinPage from "./RoomJoinPage"
+import RoomJoinPage from "./RoomJoinPage";
 import CreateRoomPage from "./CreateRoomPage";
 import Room from "./Room";
-import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom"
+import { BrowserRouter, Route, Routes, Link, Navigate } from "react-router-dom";
 import { Grid, Button, ButtonGroup, Typography } from "@mui/material";
-import Info from "./Info"
+import Info from "./Info";
 //import { indigo } from "@mui/material/colors";
 
 
@@ -17,11 +17,11 @@ const HomePage = () => {
   
   useEffect(() => {
     fetch("/api/user-in-room")
-      .then((response) => response.json())
-      .then((data) => {
-        setRoomCode(data.code);
-      });
-    }, []);
+    .then((response) => response.json())
+    .then((data) => {
+      setRoomCode(data.code);
+    });
+  }, []);
     
   const renderHomePage = () => {
     return (
@@ -49,7 +49,7 @@ const HomePage = () => {
         </Grid>
       </Grid>
     );
-  }
+  };
 
   return (
     <BrowserRouter>
@@ -71,6 +71,6 @@ const HomePage = () => {
       </Routes>
     </BrowserRouter>
   );
-}
+};
 
 export default HomePage;

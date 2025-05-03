@@ -71,7 +71,7 @@ const Room = (props) => {
         return response.json();
       }
     }).then((data) => setSong(data));
-  }
+  };
 
   const leaveButtonPressed = () => {
     const requestOptions = {
@@ -81,11 +81,11 @@ const Room = (props) => {
     fetch("/api/leave-room", requestOptions).then((_response) => {
       props.navigate("/");
     });
-  }
+  };
 
   const updateShowSettings = (value) => {
     setShowSettings(value);
-  }
+  };
 
   const renderSettings = () => {
     return (
@@ -106,7 +106,7 @@ const Room = (props) => {
         </Grid>
       </Grid>
     );
-  }
+  };
 
   const renderSettingsButton = () => {
     return (
@@ -116,7 +116,7 @@ const Room = (props) => {
         </Button>
       </Grid>
     );
-  }
+  };
 
   if (showSettings) {
       return renderSettings();

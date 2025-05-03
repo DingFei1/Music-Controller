@@ -12,11 +12,11 @@ const pages = {
 
 const joinInfo = () => {
   return "Join page";
-}
+};
 
 const createInfo = () => {
   return "Create page";
-}
+};
 
 const Info = () => {
   const [page, setPage] = useState(pages.JOIN);
@@ -49,6 +49,6 @@ const Info = () => {
       </Grid>
     </Grid>
   );
-}
+};
 
 export default Info;

@@ -37,11 +37,9 @@ const CreateRoomPage = (
       })
     };
     fetch("/api/create-room", requestOptions)
-      .then((response) => response.json())
-      .then((data) =>
-       navigate("/room/" + data.code)
-      )
-      .catch((error) => console.error("Error:", error));
+    .then((response) => response.json())
+    .then((data) => navigate("/room/" + data.code))
+    .catch((error) => console.error("Error:", error));
   }
 
   const handleUpdateButtonPressed = () => {
@@ -55,15 +53,14 @@ const CreateRoomPage = (
       })
     };
     fetch("/api/update-room", requestOptions)
-      .then((response) => {
-        if (response.ok) {
-          setSuccessMsg("Room updated successfully!");
-        } else {
-          setErrorMsg("Error updating room...");
-        }
-        updateCallback();
+    .then((response) => {
+      if (response.ok) {
+        setSuccessMsg("Room updated successfully!");
+      } else {
+        setErrorMsg("Error updating room...");
       }
-    );
+      updateCallback();
+    });
   }
 
   const renderCreateButtons = () => {

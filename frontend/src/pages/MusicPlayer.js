@@ -64,6 +64,6 @@ const MusicPlayer = (props) => {
       </Grid>
     </Card>
   );
-}
+};
 
 export default MusicPlayer;

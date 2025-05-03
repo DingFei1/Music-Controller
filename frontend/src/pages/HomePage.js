@@ -9,7 +9,7 @@ import Info from "./Info"
 
 
 const HomePage = () => {
-  const [roomCode, setRoomCode] = useState(initialRoomCode);
+  const [roomCode, setRoomCode] = useState(null);
   
   const clearRoomCode = () => {
     setRoomCode(null);

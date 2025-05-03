@@ -8,6 +8,7 @@ You can follow the instructions in the rest of this manual to build and run the 
 From the root directory<br>
 Create Virtual Environment:
 ```bash
+cd backend
 python -m venv venv
 ```
 
@@ -50,6 +51,7 @@ npm install
 #### Backend (Django)
 From the root directory:
 ```bash
+cd backend
 venv\Scripts\activate # Windows CMD, Optional
 venv\Scripts\Activate.ps1 # Windows PowerShell, Optional
 source venv/bin/activate # Mac/Linux, Optional
@@ -57,8 +59,8 @@ python manage.py runserver
 ```
 
 #### Frontend (React)
+From the root directory:
 ```bash
 cd frontend
 npm start
-npm run dev
 ```

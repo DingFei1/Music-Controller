@@ -4,6 +4,7 @@
 
 */venv/
 db.sqlite3
+backend/spotify/credentials.py
 
 # React (Frontend)
 frontend_old/
